@@ -53,6 +53,28 @@
                     </div>
                 </div>
             </div>
+
+            <dialog id="add-project-dialog">
+                <form>
+                    <div class="form-header">
+                        <h2>Add Project</h2>
+                        <button type="button" class="close-dialog" autofocus>
+                            <img src="./images/close.svg" alt="Close icon">
+                        </button>
+                    </div>
+                    <div class="form-inputs">
+                        <p>
+                            <label for="title">Title</label>
+                            <input type="text" id="title" name="title" required>
+                        </p>
+                    </div>
+                    <div class="form-submit">
+                        <button type="submit" id="submit-btn">Submit</button>
+                    </div>
+                </form>
+            </dialog>
+            
         </div>
+        <script src="deleteScript.js" defer></script>
     </body>
 </html>
