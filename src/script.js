@@ -106,8 +106,7 @@ function loadAddProjectDialog() {
         event.preventDefault();
         dialog.close();
         addProject(event.target.title.value);
-        form.reset();
-        console.log(getProjects());
+        dialog.remove();
         updateProjects();
     });
 }
