@@ -1,6 +1,6 @@
 import { Project } from "./Project.js";
 
-const projects = [];
+const projects = [new Project('Default')];
 
 const getProjects = () => projects;
 
