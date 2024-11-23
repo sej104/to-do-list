@@ -1,4 +1,4 @@
-import Project from "./Project.js";
+import { Project } from "./Project.js";
 
 const projects = [];
 
