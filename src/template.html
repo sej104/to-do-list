@@ -3,9 +3,56 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>To-Do List</title>
+        <link rel="stylesheet" href="./styles.css">
     </head>
     <body>
-        
+        <div class="grid">
+            <div class="sidebar">
+                <div class="logo">
+                    <h1>TODO</h1>
+                </div>
+                <div class="project-container">
+                    <h3>Projects:</h3>
+                    <button type="button" class="project active">
+                        <span>Homework</span>
+                        <img src="./images/trash.svg" alt="Trash icon" height="25" width="25">
+                    </button>
+                    <button type="button" class="project">
+                        <span>Clean Kitchen</span>
+                        <img src="./images/trash.svg" alt="Trash icon" height="25" width="25">
+                    </button>
+                </div>
+                <button type="button" id="add-project-btn">Add Project</button>
+            </div>
+            <div class="main-content">
+                <div>
+                    <h2 id="active-project">Homework</h2>
+                    <button type="button" id="add-task-btn">Add Task</button>
+                </div>
+                <div class="task-container">
+                    <div class="task">
+                        <p class="task-title">Study for math test</p>
+                        <p class="low-priority">Low</p>
+                        <p>11/22/2024</p>
+                        <div class="action-btns">
+                            <button type="button"><img src="./images/edit.svg" alt="Edit icon" height="25" width="23"></button>
+                            <button type="button"><img src="./images/info.svg" alt="Info icon" height="25" width="30"></button>
+                            <button type="button"><img src="./images/trash.svg" alt="Trash icon" height="25" width="25"></button>
+                        </div>
+                    </div>
+                    <div class="task">
+                        <p class="task-title">Read chapter 5</p>
+                        <p class="medium-priority">Medium</p>
+                        <p>11/24/2024</p>
+                        <div class="action-btns">
+                            <button type="button"><img src="./images/edit.svg" alt="Edit icon" height="25" width="23"></button>
+                            <button type="button"><img src="./images/info.svg" alt="Info icon" height="25" width="30"></button>
+                            <button type="button"><img src="./images/trash.svg" alt="Trash icon" height="25" width="25"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
