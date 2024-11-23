@@ -37,6 +37,19 @@ function clickHandlerDeleteProject(e) {
     updateProjects();
 }
 
+function clickHandlerSelectProject(e) {
+    const selectedProject = e.target.closest('button');
+    if (!selectedProject) return;
+
+    const activeProject = document.querySelector('.active');
+    if (activeProject) {
+        activeProject.classList.remove('active');
+    }
+    
+    selectedProject.classList.add('active');
+    //call function to render tasks
+}
+
 function loadAddProjectDialog() {
     const dialog = document.createElement('dialog');
     dialog.id = 'add-project-dialog';
@@ -114,3 +127,8 @@ function loadAddProjectDialog() {
 addProjectButton.addEventListener('click', loadAddProjectDialog);
 
 projectContainer.addEventListener('click', clickHandlerDeleteProject);
+
+projectContainer.addEventListener('click', clickHandlerSelectProject);
+
+
+updateProjects();
