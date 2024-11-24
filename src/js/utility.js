@@ -1,6 +1,6 @@
-function createDialog() {
+function createDialog(id) {
     const dialog = document.createElement('dialog');
-    dialog.id = 'add-project-dialog';
+    dialog.id = id;
     return dialog;
 }
 
@@ -11,11 +11,12 @@ function createLabel(inputId, textContent) {
     return label;
 }
 
-function createInput(type, id, name) {
+function createInput(type, id, name, value) {
     const input = document.createElement('input');
     input.setAttribute('type', type);
     input.id = id;
     input.setAttribute('name', name);
+    if (value) input.setAttribute('value', value);
     input.setAttribute('required', '');
     return input;
 }
@@ -42,12 +43,12 @@ function createFormSubmit() {
     return formSubmit;
 }
 
-function createFormHeader() {
+function createFormHeader(heading) {
     const formHeader = document.createElement('div');
     formHeader.classList.add('form-header');
 
     const dialogHeading = document.createElement('h2');
-    dialogHeading.textContent = 'Add Project';
+    dialogHeading.textContent = heading;
 
     const closeDialogButton = document.createElement('button');
     closeDialogButton.setAttribute('type', 'button');
@@ -71,6 +72,48 @@ function closeDialogEventListener(dialog) {
     });
 }
 
+function createTextArea() {
+    const textArea = document.createElement('textarea');
+    textArea.id = 'description';
+    textArea.setAttribute('name', 'description');
+    textArea.setAttribute('rows', '2');
+    textArea.setAttribute('required', '');
+    return textArea;
+}
+
+function createPriorityInput() {
+    const fieldSet = document.createElement('fieldset');
+    const legend = document.createElement('legend');
+    legend.textContent= 'Priority';
+    const ul = document.createElement('ul');
+
+    const lowPriorityContainer = document.createElement('li');
+    const lowPriorityInput = createInput('radio', 
+        'low_priority', 'priority', 'low');
+    lowPriorityInput.setAttribute('checked', '');
+    const lowPriorityLabel = createLabel('low_priority', 'Low');
+    lowPriorityLabel.classList.add('radio-label');
+    lowPriorityContainer.append(lowPriorityInput, lowPriorityLabel);
+
+    const mediumPriorityContainer = document.createElement('li');
+    const mediumPriorityInput = createInput('radio', 
+        'medium_priority', 'priority', 'medium');
+    const mediumPriorityLabel = createLabel('medium_priority', 'Medium');
+    mediumPriorityLabel.classList.add('radio-label');
+    mediumPriorityContainer.append(mediumPriorityInput, mediumPriorityLabel);
+
+    const highPriorityContainer = document.createElement('li');
+    const highPriorityInput = createInput('radio', 
+        'high_priority', 'priority', 'high');
+    const highPriorityLabel = createLabel('high_priority', 'High');
+    highPriorityLabel.classList.add('radio-label');
+    highPriorityContainer.append(highPriorityInput, highPriorityLabel);
+    
+    ul.append(lowPriorityContainer, mediumPriorityContainer, highPriorityContainer);
+    fieldSet.append(legend, ul);
+    return fieldSet;
+}
+
 export { 
     closeDialogEventListener,
     createDialog,
@@ -78,5 +121,7 @@ export {
     createInput,
     createFormHeader,
     createFormInputs,
-    createFormSubmit
+    createFormSubmit,
+    createTextArea,
+    createPriorityInput
 }
