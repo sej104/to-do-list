@@ -1,6 +1,37 @@
-import { addProject } from './projectController.js';
 import { closeDialogEventListener, createFormSubmit, createDialog, createLabel, createInput, createFormHeader, createFormInputs, createPriorityInput, createTextArea } from './utility.js'
-import { loadProjects } from '../script.js';
+import { getProjects, addProject, deleteProject } from './projectController.js'
+
+function getActiveProject() {
+    return document.querySelector('.active');
+}
+
+function loadProjects() {
+    const projectContainer = document.querySelector('#project-container');
+    projectContainer.textContent = '';
+
+    const heading = document.createElement('h3');
+    heading.textContent = 'Projects:';
+    projectContainer.append(heading);
+
+    const projects = getProjects();
+    projects.forEach(project => {
+        const button = document.createElement('button');
+        button.classList.add('project');
+        button.dataset.projectIndex = projects.indexOf(project);
+
+        const projectTitle = document.createElement('span');
+        projectTitle.textContent = project.title;
+        
+        const trashIcon = document.createElement('img');
+        trashIcon.src = './images/trash.svg';
+        trashIcon.alt = 'Trash icon';
+        trashIcon.setAttribute('height', '25');
+        trashIcon.setAttribute('width', '25');
+
+        button.append(projectTitle, trashIcon);
+        projectContainer.append(button);
+    });
+}
 
 function loadAddProjectDialog() {
     const dialog = createDialog('add-project-dialog');
@@ -73,5 +104,31 @@ function loadAddTaskDialog() {
     // });
 }
 
+function clickHandlerSelectProject(e) {
+    const selectedProject = e.target.closest('button');
+    if (!selectedProject) return;
 
-export { loadAddProjectDialog, loadAddTaskDialog };
+    const activeProject = getActiveProject();
+    if (activeProject) {
+        activeProject.classList.remove('active');
+    }
+    
+    selectedProject.classList.add('active');
+    //call function to render tasks
+}
+
+function clickHandlerDeleteProject(e) {
+    if (!e.target.matches('img')) return; 
+
+    const selectedProject = e.target.closest('button').dataset.projectIndex;
+    deleteProject(selectedProject);
+    loadProjects();
+}
+
+export { 
+    loadProjects, 
+    loadAddProjectDialog, 
+    loadAddTaskDialog, 
+    clickHandlerSelectProject, 
+    clickHandlerDeleteProject 
+};
