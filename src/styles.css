@@ -206,7 +206,7 @@ html {
 
 /* Dialog styling */
 dialog {
-    margin: 200px auto 0;
+    margin: auto;
     width: 450px;
     padding: 0;
     background-color: var(--dialog-bg-color);
@@ -239,19 +239,36 @@ form {
     padding: 16px 16px;
 }
 
-.form-inputs p {
+.form-inputs > p {
     display: flex;
     flex-direction: column;
-    margin-bottom: 9px;
+    margin-bottom: 12px;
 }
 
-input {
-    padding: 5px 10px;
-    appearance: none;
+label:not(.radio-label), 
+legend {
+    font-weight: 500;
+}
+
+input, 
+fieldset, 
+textarea {
+    padding: 5px 8px;
     border: var(--input-border);
     background-color: transparent;
-    border-radius: 5px;
     color: #000;
+}
+
+textarea {
+    resize: none;
+}
+
+fieldset {
+    margin-bottom: 6px;
+}
+
+.radio-label {
+    margin-left: 5px;
 }
 
 .form-submit {
@@ -264,8 +281,5 @@ input {
     background-color: var(--button-bg-color);
     color: #fff;
     padding: 5px;
-}
-
-#submit-btn {
     border-radius: 5px;
 }
