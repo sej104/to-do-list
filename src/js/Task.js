@@ -1,10 +1,8 @@
-import { format } from "date-fns";
-
 class Task {
-    constructor(title, dueDate, description, priority) {
+    constructor(title, description, dueDate, priority) {
         this.title = title;
         this.description = description;
-        this.dueDate = format(dueDate, 'MM/dd/yyyy');
+        this.dueDate = dueDate;
         this.priority = priority;
     }
 }

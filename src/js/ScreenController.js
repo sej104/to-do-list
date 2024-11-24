@@ -1,5 +1,6 @@
 import { closeDialogEventListener, createFormSubmit, createDialog, createLabel, createInput, createFormHeader, createFormInputs, createPriorityInput, createTextArea } from './utility.js'
 import { getProjects, addProject, deleteProject } from './projectController.js'
+import { addTask } from './taskController.js';
 
 function getActiveProject() {
     return document.querySelector('.active');
@@ -95,13 +96,21 @@ function loadAddTaskDialog() {
     dialog.showModal();
     closeDialogEventListener(dialog);
 
-    // form.addEventListener("submit", (e) => {
-    //     e.preventDefault();
-    //     dialog.close();
-    //     addProject(e.target.title.value);
-    //     dialog.remove();
-    //     loadProjects();
-    // });
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        dialog.close();
+        const activeProject = getActiveProject();
+        addTask(
+            activeProject.dataset.projectIndex,
+            e.target.title.value,
+            e.target.description.value,
+            e.target.due_date.value,
+            e.target.priority.value
+        );
+        console.log(getProjects());
+        dialog.remove();
+        loadProjects();
+    });
 }
 
 function clickHandlerSelectProject(e) {

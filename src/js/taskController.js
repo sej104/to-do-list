@@ -3,9 +3,9 @@ import { getProjects } from './projectController.js';
 
 const projects = getProjects();
 
-const addTask = (projectIndex, title, description, priority) => {
+const addTask = (projectIndex, title, description, dueDate, priority) => {
     projects[projectIndex].tasks.push(
-        new Task(title, description, priority)
+        new Task(title, description, dueDate, priority)
     );
 };
 
