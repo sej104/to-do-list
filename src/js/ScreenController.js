@@ -1,6 +1,8 @@
-import { createDialog, createLabel, createInput, createPriorityContainer, createTextArea, createIcon } from './utility.js'
-import { getProjects, addProject, deleteProject } from './projectController.js'
+import { getProjects, addProject, deleteProject } from './projectController.js';
 import { addTask, deleteTask } from './taskController.js';
+import { createDialog, createLabel, 
+    createInput, createPriorityContainer, 
+    createTextArea, createIcon } from './utility.js'
 
 function getActiveProject() {
     return document.querySelector('.active');

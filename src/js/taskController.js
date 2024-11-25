@@ -1,4 +1,4 @@
-import { Task } from './Task.js';
+import Task from './Task.js';
 import { getProjects } from './projectController.js';
 
 const projects = getProjects();
@@ -55,4 +55,11 @@ const getTasks = (projectIndex) => {
     return project.tasks;
 }
 
-export { addTask, editTask, deleteTask, printProjectTasks, printTaskDetails, getTasks };
+export { 
+    addTask, 
+    editTask, 
+    deleteTask, 
+    printProjectTasks, 
+    printTaskDetails, 
+    getTasks 
+};
