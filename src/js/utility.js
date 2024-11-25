@@ -78,35 +78,31 @@ function createPriorityContainer() {
     legend.textContent= 'Priority';
     const ul = document.createElement('ul');
 
-    const lowPriorityContainer = document.createElement('li');
-    const lowPriorityInput = createInput('radio', 
-        'low_priority', 'priority', 'low');
-    lowPriorityInput.setAttribute('checked', '');
-    const lowPriorityLabel = createLabel('low_priority', 'Low');
-    lowPriorityLabel.classList.add('radio-label');
-    lowPriorityContainer.append(lowPriorityInput, lowPriorityLabel);
+    const lowPriorityInput = createPriorityInput('low_priority', 
+        'low', true);
+    const mediumPriorityInput = createPriorityInput('medium_priority', 
+        'medium', false);
+    const highPriorityInput = createPriorityInput('high_priority', 
+        'high', false);
 
-    const mediumPriorityContainer = document.createElement('li');
-    const mediumPriorityInput = createInput('radio', 
-        'medium_priority', 'priority', 'medium');
-    const mediumPriorityLabel = createLabel('medium_priority', 'Medium');
-    mediumPriorityLabel.classList.add('radio-label');
-    mediumPriorityContainer.append(mediumPriorityInput, mediumPriorityLabel);
-
-    const highPriorityContainer = document.createElement('li');
-    const highPriorityInput = createInput('radio', 
-        'high_priority', 'priority', 'high');
-    const highPriorityLabel = createLabel('high_priority', 'High');
-    highPriorityLabel.classList.add('radio-label');
-    highPriorityContainer.append(highPriorityInput, highPriorityLabel);
-    
-    ul.append(lowPriorityContainer, mediumPriorityContainer, highPriorityContainer);
+    ul.append(lowPriorityInput, mediumPriorityInput, highPriorityInput);
     fieldSet.append(legend, ul);
     return fieldSet;
 }
 
-function createPriorityInput() {
+function createPriorityInput(id, value, isSelected) {
+    const container = document.createElement('li');
 
+    const input = createInput('radio', id, 'priority', value);
+    if (isSelected) input.setAttribute('checked', '');
+    
+    const label = createLabel(id, 
+        `${value.charAt(0).toUpperCase()}${value.slice(1)}`
+    );
+    label.classList.add('radio-label');
+
+    container.append(input, label);
+    return container;
 }
 
 function createIcon(src, alt, height, width) {
@@ -123,6 +119,6 @@ export {
     createLabel,
     createInput,
     createTextArea,
-    createPriorityInput,
+    createPriorityContainer,
     createIcon, 
 }

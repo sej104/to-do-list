@@ -1,4 +1,4 @@
-import { createDialog, createLabel, createInput, createPriorityInput, createTextArea, createIcon } from './utility.js'
+import { createDialog, createLabel, createInput, createPriorityContainer, createTextArea, createIcon } from './utility.js'
 import { getProjects, addProject, deleteProject } from './projectController.js'
 import { addTask, deleteTask } from './taskController.js';
 
@@ -167,7 +167,7 @@ function loadAddTaskDialog() {
     const dueDateInput = createInput('date', 'due_date', 'due_date');
     dueDateContainer.append(dueDateLabel, dueDateInput);
 
-    const priorityContainer = createPriorityInput();
+    const priorityContainer = createPriorityContainer();
 
     formInputs.append(titleContainer, descriptionContainer, 
         dueDateContainer, priorityContainer);
