@@ -114,6 +114,20 @@ function createPriorityInput() {
     return fieldSet;
 }
 
+function createActionButton(type, alt, height, width) {
+    const button = document.createElement('button');
+    button.setAttribute('type', 'button');
+
+    const img = document.createElement('img');
+    img.src = `./images/${type}.svg`;
+    img.alt = alt;
+    img.height = height;
+    img.width = width;
+
+    button.append(img);
+    return button;
+}
+
 export { 
     closeDialogEventListener,
     createDialog,
@@ -123,5 +137,6 @@ export {
     createFormInputs,
     createFormSubmit,
     createTextArea,
-    createPriorityInput
+    createPriorityInput,
+    createActionButton
 }

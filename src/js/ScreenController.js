@@ -1,4 +1,4 @@
-import { closeDialogEventListener, createFormSubmit, createDialog, createLabel, createInput, createFormHeader, createFormInputs, createPriorityInput, createTextArea } from './utility.js'
+import { closeDialogEventListener, createFormSubmit, createDialog, createLabel, createInput, createFormHeader, createFormInputs, createPriorityInput, createTextArea, createActionButton } from './utility.js'
 import { getProjects, addProject, deleteProject } from './projectController.js'
 import { addTask } from './taskController.js';
 
@@ -34,6 +34,73 @@ function loadProjects() {
     });
 }
 
+function loadTasks() {
+    removeTasks();
+    const activeProject = getActiveProject();
+
+    if (activeProject) {
+        const projectTitle = document.querySelector('#project-title');
+        projectTitle.textContent = activeProject.textContent;
+
+        const addTaskButton = document.createElement('button');
+        addTaskButton.setAttribute('type', 'button');
+        addTaskButton.id = 'add-task-btn';
+        addTaskButton.textContent = 'Add Task';
+        addTaskButton.addEventListener('click', loadAddTaskDialog);
+        
+        const projectHeader = document.querySelector('#project-header');
+        projectHeader.append(addTaskButton);
+
+        const projects = getProjects();
+        const tasks = projects[activeProject.dataset.projectIndex].tasks;
+        
+        tasks.forEach(task => {
+            const container = document.createElement('div');
+            container.classList.add('task');
+
+            const title = document.createElement('p');
+            title.textContent = task.title;
+            title.classList.add('task-title');
+
+            const priority = document.createElement('p');
+            priority.textContent = task.priority;
+            switch(task.priority) {
+                case 'low': 
+                    priority.classList.add('low-priority');
+                    break;
+                case 'medium':                    
+                    priority.classList.add('medium-priority');
+                    break;
+                case 'high':
+                    priority.classList.add('high-priority');
+                    break;
+            }
+
+            const dueDate = document.createElement('p');
+            dueDate.textContent = task.dueDate;
+
+            const actionButtons = document.createElement('div');
+            actionButtons.classList.add('action-btns');
+            const editButton = createActionButton('edit', 'Edit icon', 25, 23);
+            const infoButton = createActionButton('info', 'Info icon', 25, 30);
+            const trashButton = createActionButton('trash', 'Trash icon', 25, 25);
+            actionButtons.append(editButton, infoButton, trashButton);
+
+            container.append(title, priority, dueDate, actionButtons);
+            document.querySelector('#task-container').append(container);
+        });
+    }
+}
+
+function removeTasks() {
+    document.querySelector('#project-title').textContent = 'Select a Project...';
+
+    const addTaskButton = document.querySelector('#add-task-btn');
+    if(addTaskButton) addTaskButton.remove();
+
+    document.querySelector('#task-container').textContent = '';
+}
+
 function loadAddProjectDialog() {
     const dialog = createDialog('add-project-dialog');
     const form = document.createElement('form');
@@ -44,6 +111,7 @@ function loadAddProjectDialog() {
     const titleContainer = document.createElement('p');
     const titleLabel = createLabel('title', 'Title');
     const titleInput = createInput('text', 'title', 'title');
+    titleInput.setAttribute('maxlength', '20');
     titleContainer.append(titleLabel, titleInput);
     formInputs.append(titleContainer);
 
@@ -60,6 +128,7 @@ function loadAddProjectDialog() {
         addProject(e.target.title.value);
         dialog.remove();
         loadProjects();
+        removeTasks();
     });
 }
 
@@ -73,6 +142,7 @@ function loadAddTaskDialog() {
     const titleContainer = document.createElement('p');
     const titleLabel = createLabel('title', 'Title')
     const titleInput = createInput('text', 'title', 'title');
+    titleInput.setAttribute('maxlength', '25');
     titleContainer.append(titleLabel, titleInput);
 
     const descriptionContainer = document.createElement('p');
@@ -109,7 +179,7 @@ function loadAddTaskDialog() {
         );
         console.log(getProjects());
         dialog.remove();
-        loadProjects();
+        loadTasks();
     });
 }
 
@@ -123,7 +193,7 @@ function clickHandlerSelectProject(e) {
     }
     
     selectedProject.classList.add('active');
-    //call function to render tasks
+    loadTasks();
 }
 
 function clickHandlerDeleteProject(e) {
@@ -132,10 +202,12 @@ function clickHandlerDeleteProject(e) {
     const selectedProject = e.target.closest('button').dataset.projectIndex;
     deleteProject(selectedProject);
     loadProjects();
+    loadTasks();
 }
 
 export { 
     loadProjects, 
+    loadTasks,
     loadAddProjectDialog, 
     loadAddTaskDialog, 
     clickHandlerSelectProject, 
