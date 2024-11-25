@@ -1,4 +1,4 @@
-import { closeDialogEventListener, createFormSubmit, createDialog, createLabel, createInput, createFormHeader, createFormInputs, createPriorityInput, createTextArea, createIcon } from './utility.js'
+import { createDialog, createLabel, createInput, createPriorityInput, createTextArea, createIcon } from './utility.js'
 import { getProjects, addProject, deleteProject } from './projectController.js'
 import { addTask, deleteTask } from './taskController.js';
 
@@ -37,6 +37,8 @@ function loadTasks() {
     const activeProject = getActiveProject();
 
     if (activeProject) {
+        const projectHeader = document.querySelector('#project-header');
+
         const projectTitle = document.querySelector('#project-title');
         projectTitle.textContent = activeProject.textContent;
 
@@ -46,7 +48,7 @@ function loadTasks() {
         addTaskButton.textContent = 'Add Task';
         addTaskButton.addEventListener('click', loadAddTaskDialog);
         
-        document.querySelector('#project-header').append(addTaskButton);
+        projectHeader.append(addTaskButton);
 
         const projects = getProjects();
         const tasks = projects[activeProject.dataset.projectIndex].tasks;
@@ -62,6 +64,7 @@ function loadTasks() {
 
             const priority = document.createElement('p');
             priority.textContent = task.priority;
+
             switch(task.priority) {
                 case 'low': 
                     priority.classList.add('low-priority');
@@ -94,15 +97,15 @@ function loadTasks() {
                 createIcon('./images/info.svg', 'Info icon', 25, 30)
             );
             
-            const trashButton = document.createElement('button');
-            trashButton.setAttribute('type', 'button');
-            trashButton.dataset.actionType = 'delete';
-            trashButton.append(
+            const deleteButton = document.createElement('button');
+            deleteButton.setAttribute('type', 'button');
+            deleteButton.dataset.actionType = 'delete';
+            deleteButton.append(
                 createIcon('./images/trash.svg', 'Trash icon', 25, 25)
             );
-            trashButton.addEventListener('click', clickHandlerDeleteTask);
+            deleteButton.addEventListener('click', clickHandlerDeleteTask);
             
-            actionButtons.append(editButton, viewButton, trashButton);
+            actionButtons.append(editButton, viewButton, deleteButton);
 
             container.append(title, priority, dueDate, actionButtons);
             document.querySelector('#task-container').append(container);
@@ -111,20 +114,20 @@ function loadTasks() {
 }
 
 function removeTasks() {
-    document.querySelector('#project-title').textContent = 'Select a Project...';
+    const projectTitle = document.querySelector('#project-title');
+    projectTitle.textContent = 'Select a Project...';
 
     const addTaskButton = document.querySelector('#add-task-btn');
     if(addTaskButton) addTaskButton.remove();
 
-    document.querySelector('#task-container').textContent = '';
+    const taskContainer = document.querySelector('#task-container');
+    taskContainer.textContent = '';
 }
 
 function loadAddProjectDialog() {
-    const dialog = createDialog('add-project-dialog');
-    const form = document.createElement('form');
-    const formHeader = createFormHeader('Add Project');
-    const formInputs = createFormInputs();
-    const formSubmit = createFormSubmit();
+    const dialog = createDialog('add-project-dialog', 'Add Project');
+    const formInputs = dialog.querySelector('.form-inputs');
+    const form = dialog.querySelector('form');
 
     const titleContainer = document.createElement('p');
     const titleLabel = createLabel('title', 'Title');
@@ -133,12 +136,6 @@ function loadAddProjectDialog() {
     titleContainer.append(titleLabel, titleInput);
 
     formInputs.append(titleContainer);
-    form.append(formHeader, formInputs, formSubmit);
-    dialog.append(form);
-    document.querySelector('body').append(dialog);
-
-    dialog.showModal();
-    closeDialogEventListener(dialog);
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -150,11 +147,9 @@ function loadAddProjectDialog() {
 }
 
 function loadAddTaskDialog() {
-    const dialog = createDialog('add-task-dialog');
-    const form = document.createElement('form');
-    const formHeader = createFormHeader('Add Task');
-    const formInputs = createFormInputs();
-    const formSubmit = createFormSubmit();
+    const dialog = createDialog('add-task-dialog', 'Add Task');
+    const formInputs = dialog.querySelector('.form-inputs');
+    const form = dialog.querySelector('form');
 
     const titleContainer = document.createElement('p');
     const titleLabel = createLabel('title', 'Title')
@@ -176,12 +171,6 @@ function loadAddTaskDialog() {
 
     formInputs.append(titleContainer, descriptionContainer, 
         dueDateContainer, priorityContainer);
-    form.append(formHeader, formInputs, formSubmit);
-    dialog.append(form);
-    document.querySelector('body').append(dialog);
-
-    dialog.showModal();
-    closeDialogEventListener(dialog);
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -199,21 +188,23 @@ function loadAddTaskDialog() {
 }
 
 function clickHandlerSelectProject(e) {
-    const selectedProject = e.target.closest('button');
+    const selectedProject = e.target.closest('.project');
     if (!selectedProject) return;
 
     const activeProject = getActiveProject();
     if (activeProject) activeProject.classList.remove('active');
     
     selectedProject.classList.add('active');
+    
     loadTasks();
 }
 
 function clickHandlerDeleteProject(e) {
     if (!e.target.matches('img')) return; 
 
-    const selectedProject = e.target.closest('button');
+    const selectedProject = e.target.closest('.project');
     deleteProject(selectedProject.dataset.projectIndex);
+
     loadProjects();
 }
 
@@ -224,14 +215,13 @@ function clickHandlerDeleteTask(e) {
     const activeProject = getActiveProject();
     deleteTask(activeProject.dataset.projectIndex, 
         selectedTask.dataset.taskIndex);
+
     loadTasks();
 }
 
 export { 
     loadProjects, 
-    loadTasks,
     loadAddProjectDialog, 
-    loadAddTaskDialog, 
     clickHandlerSelectProject, 
     clickHandlerDeleteProject 
 };

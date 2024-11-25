@@ -1,6 +1,48 @@
-function createDialog(id) {
+function createDialog(id, heading) {
     const dialog = document.createElement('dialog');
     dialog.id = id;
+
+    const form = document.createElement('form');
+
+    const formHeader = document.createElement('div');
+    formHeader.classList.add('form-header');
+
+    const dialogHeading = document.createElement('h2');
+    dialogHeading.textContent = heading;
+
+    const closeDialogButton = document.createElement('button');
+    closeDialogButton.setAttribute('type', 'button');
+    closeDialogButton.id = 'close-dialog';
+    closeDialogButton.setAttribute('autofocus', '');
+
+    const icon = document.createElement('img');
+    icon.src = './images/close.svg';
+    icon.alt = 'Close icon';
+    closeDialogButton.append(icon);
+
+    formHeader.append(dialogHeading, closeDialogButton);
+
+    const formInputs = document.createElement('div');
+    formInputs.classList.add('form-inputs');
+
+    const formSubmit = document.createElement('div');
+    formSubmit.classList.add('form-submit');
+    const submitButton = document.createElement('button');
+    submitButton.setAttribute('type', 'submit');
+    submitButton.id = 'submit-btn';
+    submitButton.textContent = 'Submit';
+    formSubmit.append(submitButton);
+
+    form.append(formHeader, formInputs, formSubmit);
+    dialog.append(form);
+    document.querySelector('body').append(dialog);
+
+    dialog.showModal();
+    
+    closeDialogButton.addEventListener('click', () => {
+        dialog.remove();
+    });
+    
     return dialog;
 }
 
@@ -21,56 +63,6 @@ function createInput(type, id, name, value) {
     return input;
 }
 
-function createSubmitButton() {
-    const submitButton = document.createElement('button');
-    submitButton.setAttribute('type', 'submit');
-    submitButton.id = 'submit-btn';
-    submitButton.textContent = 'Submit';
-    return submitButton;
-}
-
-function createFormInputs() {
-    const formInputs = document.createElement('div');
-    formInputs.classList.add('form-inputs');
-    return formInputs;
-}
-
-function createFormSubmit() {
-    const formSubmit = document.createElement('div');
-    formSubmit.classList.add('form-submit');
-    const submitButton = createSubmitButton();
-    formSubmit.append(submitButton);
-    return formSubmit;
-}
-
-function createFormHeader(heading) {
-    const formHeader = document.createElement('div');
-    formHeader.classList.add('form-header');
-
-    const dialogHeading = document.createElement('h2');
-    dialogHeading.textContent = heading;
-
-    const closeDialogButton = document.createElement('button');
-    closeDialogButton.setAttribute('type', 'button');
-    closeDialogButton.id = 'close-dialog';
-    closeDialogButton.setAttribute('autofocus', '');
-
-    const icon = document.createElement('img');
-    icon.src = './images/close.svg';
-    icon.alt = 'Close icon';
-    closeDialogButton.append(icon);
-
-    formHeader.append(dialogHeading, closeDialogButton);
-    return formHeader;
-}
-
-function closeDialogEventListener(dialog) {
-    const closeDialogButton = dialog.querySelector('#close-dialog');
-    closeDialogButton.addEventListener('click', () => {
-        dialog.remove();
-    });
-}
-
 function createTextArea() {
     const textArea = document.createElement('textarea');
     textArea.id = 'description';
@@ -80,7 +72,7 @@ function createTextArea() {
     return textArea;
 }
 
-function createPriorityInput() {
+function createPriorityContainer() {
     const fieldSet = document.createElement('fieldset');
     const legend = document.createElement('legend');
     legend.textContent= 'Priority';
@@ -113,6 +105,10 @@ function createPriorityInput() {
     return fieldSet;
 }
 
+function createPriorityInput() {
+
+}
+
 function createIcon(src, alt, height, width) {
     const icon = document.createElement('img');
     icon.src = src;
@@ -122,22 +118,11 @@ function createIcon(src, alt, height, width) {
     return icon;
 }
 
-function createButton(type) {
-    const button = document.createElement('button');
-    button.setAttribute('type', 'button');
-    return button;
-}
-
 export { 
-    closeDialogEventListener,
     createDialog,
     createLabel,
     createInput,
-    createFormHeader,
-    createFormInputs,
-    createFormSubmit,
     createTextArea,
     createPriorityInput,
     createIcon, 
-    createButton
 }
