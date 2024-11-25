@@ -1,6 +1,6 @@
-import { closeDialogEventListener, createFormSubmit, createDialog, createLabel, createInput, createFormHeader, createFormInputs, createPriorityInput, createTextArea, createActionButton } from './utility.js'
+import { closeDialogEventListener, createFormSubmit, createDialog, createLabel, createInput, createFormHeader, createFormInputs, createPriorityInput, createTextArea, createIcon } from './utility.js'
 import { getProjects, addProject, deleteProject } from './projectController.js'
-import { addTask } from './taskController.js';
+import { addTask, deleteTask } from './taskController.js';
 
 function getActiveProject() {
     return document.querySelector('.active');
@@ -17,17 +17,15 @@ function loadProjects() {
     const projects = getProjects();
     projects.forEach(project => {
         const button = document.createElement('button');
+        button.setAttribute('type', 'button');
         button.classList.add('project');
         button.dataset.projectIndex = projects.indexOf(project);
 
         const projectTitle = document.createElement('span');
         projectTitle.textContent = project.title;
         
-        const trashIcon = document.createElement('img');
-        trashIcon.src = './images/trash.svg';
-        trashIcon.alt = 'Trash icon';
-        trashIcon.setAttribute('height', '25');
-        trashIcon.setAttribute('width', '25');
+        const trashIcon = createIcon('./images/trash.svg', 
+            'Trash icon', 25, 25);
 
         button.append(projectTitle, trashIcon);
         projectContainer.append(button);
@@ -48,8 +46,7 @@ function loadTasks() {
         addTaskButton.textContent = 'Add Task';
         addTaskButton.addEventListener('click', loadAddTaskDialog);
         
-        const projectHeader = document.querySelector('#project-header');
-        projectHeader.append(addTaskButton);
+        document.querySelector('#project-header').append(addTaskButton);
 
         const projects = getProjects();
         const tasks = projects[activeProject.dataset.projectIndex].tasks;
@@ -57,6 +54,7 @@ function loadTasks() {
         tasks.forEach(task => {
             const container = document.createElement('div');
             container.classList.add('task');
+            container.dataset.taskIndex = tasks.indexOf(task);
 
             const title = document.createElement('p');
             title.textContent = task.title;
@@ -81,10 +79,30 @@ function loadTasks() {
 
             const actionButtons = document.createElement('div');
             actionButtons.classList.add('action-btns');
-            const editButton = createActionButton('edit', 'Edit icon', 25, 23);
-            const infoButton = createActionButton('info', 'Info icon', 25, 30);
-            const trashButton = createActionButton('trash', 'Trash icon', 25, 25);
-            actionButtons.append(editButton, infoButton, trashButton);
+
+            const editButton = document.createElement('button');
+            editButton.setAttribute('type', 'button');
+            editButton.dataset.actionType = 'edit';
+            editButton.append(
+                createIcon('./images/edit.svg', 'Edit icon', 25, 23)
+            );
+            
+            const viewButton = document.createElement('button');
+            viewButton.setAttribute('type', 'button');
+            viewButton.dataset.actionType = 'view';
+            viewButton.append(
+                createIcon('./images/info.svg', 'Info icon', 25, 30)
+            );
+            
+            const trashButton = document.createElement('button');
+            trashButton.setAttribute('type', 'button');
+            trashButton.dataset.actionType = 'delete';
+            trashButton.append(
+                createIcon('./images/trash.svg', 'Trash icon', 25, 25)
+            );
+            trashButton.addEventListener('click', clickHandlerDeleteTask);
+            
+            actionButtons.append(editButton, viewButton, trashButton);
 
             container.append(title, priority, dueDate, actionButtons);
             document.querySelector('#task-container').append(container);
@@ -113,8 +131,8 @@ function loadAddProjectDialog() {
     const titleInput = createInput('text', 'title', 'title');
     titleInput.setAttribute('maxlength', '20');
     titleContainer.append(titleLabel, titleInput);
-    formInputs.append(titleContainer);
 
+    formInputs.append(titleContainer);
     form.append(formHeader, formInputs, formSubmit);
     dialog.append(form);
     document.querySelector('body').append(dialog);
@@ -124,7 +142,6 @@ function loadAddProjectDialog() {
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-        dialog.close();
         addProject(e.target.title.value);
         dialog.remove();
         loadProjects();
@@ -168,7 +185,6 @@ function loadAddTaskDialog() {
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-        dialog.close();
         const activeProject = getActiveProject();
         addTask(
             activeProject.dataset.projectIndex,
@@ -177,7 +193,6 @@ function loadAddTaskDialog() {
             e.target.due_date.value,
             e.target.priority.value
         );
-        console.log(getProjects());
         dialog.remove();
         loadTasks();
     });
@@ -188,9 +203,7 @@ function clickHandlerSelectProject(e) {
     if (!selectedProject) return;
 
     const activeProject = getActiveProject();
-    if (activeProject) {
-        activeProject.classList.remove('active');
-    }
+    if (activeProject) activeProject.classList.remove('active');
     
     selectedProject.classList.add('active');
     loadTasks();
@@ -199,9 +212,18 @@ function clickHandlerSelectProject(e) {
 function clickHandlerDeleteProject(e) {
     if (!e.target.matches('img')) return; 
 
-    const selectedProject = e.target.closest('button').dataset.projectIndex;
-    deleteProject(selectedProject);
+    const selectedProject = e.target.closest('button');
+    deleteProject(selectedProject.dataset.projectIndex);
     loadProjects();
+}
+
+function clickHandlerDeleteTask(e) {
+    if (!e.target.matches('img')) return; 
+
+    const selectedTask = e.target.closest('.task');
+    const activeProject = getActiveProject();
+    deleteTask(activeProject.dataset.projectIndex, 
+        selectedTask.dataset.taskIndex);
     loadTasks();
 }
 

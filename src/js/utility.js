@@ -67,7 +67,6 @@ function createFormHeader(heading) {
 function closeDialogEventListener(dialog) {
     const closeDialogButton = dialog.querySelector('#close-dialog');
     closeDialogButton.addEventListener('click', () => {
-        dialog.close();
         dialog.remove();
     });
 }
@@ -114,17 +113,18 @@ function createPriorityInput() {
     return fieldSet;
 }
 
-function createActionButton(type, alt, height, width) {
+function createIcon(src, alt, height, width) {
+    const icon = document.createElement('img');
+    icon.src = src;
+    icon.alt = alt;
+    icon.height = height;
+    icon.width = width;
+    return icon;
+}
+
+function createButton(type) {
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
-
-    const img = document.createElement('img');
-    img.src = `./images/${type}.svg`;
-    img.alt = alt;
-    img.height = height;
-    img.width = width;
-
-    button.append(img);
     return button;
 }
 
@@ -138,5 +138,6 @@ export {
     createFormSubmit,
     createTextArea,
     createPriorityInput,
-    createActionButton
+    createIcon, 
+    createButton
 }
