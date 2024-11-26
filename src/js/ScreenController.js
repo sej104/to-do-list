@@ -4,6 +4,10 @@ import { addTask, editTask, deleteTask,
     getProjectTasks, getTask } from './taskController.js';
 import { createDialog, createLabel, createInput, setTaskInputValues,
     createIcon, setRadioButton, createTaskDialogInputs} from './utility.js';
+import editImage from '../images/edit.svg';
+import infoImage from '../images/info.svg';
+import trashImage from '../images/trash.svg';
+import { format, parseISO } from 'date-fns';
 
 function getActiveProject() {
     return document.querySelector('.active');
@@ -27,7 +31,7 @@ function loadProjects() {
         const projectTitle = document.createElement('span');
         projectTitle.textContent = project.title;
         
-        const trashIcon = createIcon('./images/trash.svg', 
+        const trashIcon = createIcon(trashImage, 
             'Trash icon', 25, 25);
 
         button.append(projectTitle, trashIcon);
@@ -87,21 +91,21 @@ function loadTasks() {
             const editButton = document.createElement('button');
             editButton.setAttribute('type', 'button');
             editButton.append(
-                createIcon('./images/edit.svg', 'Edit icon', 25, 23)
+                createIcon(editImage, 'Edit icon', 25, 23)
             );
             editButton.addEventListener('click', clickHandlerEditTask);
             
             const viewButton = document.createElement('button');
             viewButton.setAttribute('type', 'button');
             viewButton.append(
-                createIcon('./images/info.svg', 'Info icon', 25, 30)
+                createIcon(infoImage, 'Info icon', 25, 30)
             );
             viewButton.addEventListener('click', clickHandlerViewTask);
             
             const deleteButton = document.createElement('button');
             deleteButton.setAttribute('type', 'button');
             deleteButton.append(
-                createIcon('./images/trash.svg', 'Trash icon', 25, 25)
+                createIcon(trashImage, 'Trash icon', 25, 25)
             );
             deleteButton.addEventListener('click', clickHandlerDeleteTask);
             

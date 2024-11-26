@@ -1,3 +1,6 @@
+import closeImage from '../images/close.svg';
+import { format } from 'date-fns';
+
 function createDialog(id, heading) {
     const dialog = document.createElement('dialog');
     dialog.id = id;
@@ -15,7 +18,7 @@ function createDialog(id, heading) {
     closeDialogButton.id = 'close-dialog';
     closeDialogButton.setAttribute('autofocus', '');
 
-    const icon = createIcon('./images/close.svg');
+    const icon = createIcon(closeImage);
     closeDialogButton.append(icon);
 
     formHeader.append(dialogHeading, closeDialogButton);
