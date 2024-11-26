@@ -50,9 +50,6 @@ const printTaskDetails = (projectIndex, taskIndex) => {
 
 const getProjectTasks = (projectIndex) => {
     const project = projects[projectIndex];
-
-    if (!project || !project.tasks.length) return;
-
     return project.tasks;
 }
 

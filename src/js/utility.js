@@ -15,9 +15,7 @@ function createDialog(id, heading) {
     closeDialogButton.id = 'close-dialog';
     closeDialogButton.setAttribute('autofocus', '');
 
-    const icon = document.createElement('img');
-    icon.src = './images/close.svg';
-    icon.alt = 'Close icon';
+    const icon = createIcon('./images/close.svg');
     closeDialogButton.append(icon);
 
     formHeader.append(dialogHeading, closeDialogButton);
@@ -63,33 +61,26 @@ function createInput(type, id, name, value) {
     return input;
 }
 
-function createTextArea(value) {
+function createTextArea(identifier, value) {
     const textArea = document.createElement('textarea');
-    textArea.id = 'description';
-    textArea.setAttribute('name', 'description');
+    textArea.id = identifier;
+    textArea.setAttribute('name', identifier);
     textArea.setAttribute('rows', '2');
-    if(value) textArea.textContent = value;
+    if (value) textArea.textContent = value;
     textArea.setAttribute('required', '');
     return textArea;
 }
 
-function createFieldSet() {
+function createPriorityContainer() {
     const fieldSet = document.createElement('fieldset');
     const legend = document.createElement('legend');
     legend.textContent= 'Priority';
     const ul = document.createElement('ul');
 
-    const lowPriorityButton = createRadioButton(
-        'low_priority', 'priority', 'low'
-    );
-    const mediumPriorityButton = createRadioButton(
-        'medium_priority', 'priority', 'medium'
-    );
-    const highPriorityButton = createRadioButton(
-        'high_priority', 'priority', 'high'
-    );
     ul.append(
-        lowPriorityButton, mediumPriorityButton, highPriorityButton
+        createRadioButton('low_priority', 'priority', 'low'),
+        createRadioButton('medium_priority', 'priority', 'medium'),
+        createRadioButton('high_priority', 'priority', 'high')
     );
 
     fieldSet.append(legend, ul);
@@ -119,8 +110,10 @@ function createIcon(src, alt, height, width) {
     const icon = document.createElement('img');
     icon.src = src;
     icon.alt = alt;
-    icon.height = height;
-    icon.width = width;
+    if (height && width) {
+        icon.height = height;
+        icon.width = width;
+    }
     return icon;
 }
 
@@ -129,7 +122,7 @@ export {
     createLabel,
     createInput,
     createTextArea,
-    createFieldSet,
+    createPriorityContainer,
     createIcon,
     setRadioButton 
 }

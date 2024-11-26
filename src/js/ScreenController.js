@@ -1,6 +1,6 @@
 import { getProjects, addProject, deleteProject } from './projectController.js';
 import { addTask, editTask, deleteTask, getProjectTasks, getTask } from './taskController.js';
-import { createDialog, createLabel, createInput, createFieldSet, 
+import { createDialog, createLabel, createInput, createPriorityContainer, 
     createTextArea, createIcon, setRadioButton } from './utility.js'
 
 function getActiveProject() {
@@ -48,12 +48,10 @@ function loadTasks() {
         addTaskButton.id = 'add-task-btn';
         addTaskButton.textContent = 'Add Task';
         addTaskButton.addEventListener('click', loadAddTaskDialog);
-        
+
         projectHeader.append(addTaskButton);
 
-        const projects = getProjects();
-        const tasks = projects[activeProject.dataset.projectIndex].tasks;
-        
+        const tasks = getProjectTasks(activeProject.dataset.projectIndex);
         tasks.forEach(task => {
             const container = document.createElement('div');
             container.classList.add('task');
@@ -86,7 +84,6 @@ function loadTasks() {
 
             const editButton = document.createElement('button');
             editButton.setAttribute('type', 'button');
-            editButton.dataset.actionType = 'edit';
             editButton.append(
                 createIcon('./images/edit.svg', 'Edit icon', 25, 23)
             );
@@ -94,14 +91,12 @@ function loadTasks() {
             
             const viewButton = document.createElement('button');
             viewButton.setAttribute('type', 'button');
-            viewButton.dataset.actionType = 'view';
             viewButton.append(
                 createIcon('./images/info.svg', 'Info icon', 25, 30)
             );
             
             const deleteButton = document.createElement('button');
             deleteButton.setAttribute('type', 'button');
-            deleteButton.dataset.actionType = 'delete';
             deleteButton.append(
                 createIcon('./images/trash.svg', 'Trash icon', 25, 25)
             );
@@ -120,7 +115,7 @@ function removeTasks() {
     projectTitle.textContent = 'Select a Project...';
 
     const addTaskButton = document.querySelector('#add-task-btn');
-    if(addTaskButton) addTaskButton.remove();
+    if (addTaskButton) addTaskButton.remove();
 
     const taskContainer = document.querySelector('#task-container');
     taskContainer.textContent = '';
@@ -161,7 +156,7 @@ function loadAddTaskDialog() {
 
     const descriptionContainer = document.createElement('p');
     const descriptionLabel = createLabel('description', 'Description');
-    const descriptionInput = createTextArea();
+    const descriptionInput = createTextArea('description');
     descriptionContainer.append(descriptionLabel, descriptionInput);
 
     const dueDateContainer = document.createElement('p');
@@ -169,7 +164,7 @@ function loadAddTaskDialog() {
     const dueDateInput = createInput('date', 'due_date', 'due_date');
     dueDateContainer.append(dueDateLabel, dueDateInput);
 
-    const priorityContainer = createFieldSet();
+    const priorityContainer = createPriorityContainer();
 
     formInputs.append(titleContainer, descriptionContainer, 
         dueDateContainer, priorityContainer);
@@ -178,9 +173,9 @@ function loadAddTaskDialog() {
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-        const activeProject = getActiveProject();
+        const projectIndex = getActiveProject().dataset.projectIndex;
         addTask(
-            activeProject.dataset.projectIndex,
+            projectIndex,
             e.target.title.value,
             e.target.description.value,
             e.target.due_date.value,
@@ -204,7 +199,7 @@ function loadEditTaskDialog(task) {
 
     const descriptionContainer = document.createElement('p');
     const descriptionLabel = createLabel('description', 'Description');
-    const descriptionInput = createTextArea(task.description);
+    const descriptionInput = createTextArea('description', task.description);
     descriptionContainer.append(descriptionLabel, descriptionInput);
 
     const dueDateContainer = document.createElement('p');
@@ -213,7 +208,7 @@ function loadEditTaskDialog(task) {
         'due_date', task.dueDate);
     dueDateContainer.append(dueDateLabel, dueDateInput);
 
-    const priorityContainer = createFieldSet();
+    const priorityContainer = createPriorityContainer();
 
     formInputs.append(titleContainer, descriptionContainer, 
         dueDateContainer, priorityContainer);
