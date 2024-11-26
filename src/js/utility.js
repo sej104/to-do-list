@@ -63,38 +63,43 @@ function createInput(type, id, name, value) {
     return input;
 }
 
-function createTextArea() {
+function createTextArea(value) {
     const textArea = document.createElement('textarea');
     textArea.id = 'description';
     textArea.setAttribute('name', 'description');
     textArea.setAttribute('rows', '2');
+    if(value) textArea.textContent = value;
     textArea.setAttribute('required', '');
     return textArea;
 }
 
-function createPriorityContainer() {
+function createFieldSet() {
     const fieldSet = document.createElement('fieldset');
     const legend = document.createElement('legend');
     legend.textContent= 'Priority';
     const ul = document.createElement('ul');
 
-    const lowPriorityInput = createPriorityInput('low_priority', 
-        'low', true);
-    const mediumPriorityInput = createPriorityInput('medium_priority', 
-        'medium', false);
-    const highPriorityInput = createPriorityInput('high_priority', 
-        'high', false);
+    const lowPriorityButton = createRadioButton(
+        'low_priority', 'priority', 'low'
+    );
+    const mediumPriorityButton = createRadioButton(
+        'medium_priority', 'priority', 'medium'
+    );
+    const highPriorityButton = createRadioButton(
+        'high_priority', 'priority', 'high'
+    );
+    ul.append(
+        lowPriorityButton, mediumPriorityButton, highPriorityButton
+    );
 
-    ul.append(lowPriorityInput, mediumPriorityInput, highPriorityInput);
     fieldSet.append(legend, ul);
     return fieldSet;
 }
 
-function createPriorityInput(id, value, isSelected) {
+function createRadioButton(id, name, value) {
     const container = document.createElement('li');
 
-    const input = createInput('radio', id, 'priority', value);
-    if (isSelected) input.setAttribute('checked', '');
+    const input = createInput('radio', id, name, value);
     
     const label = createLabel(id, 
         `${value.charAt(0).toUpperCase()}${value.slice(1)}`
@@ -103,6 +108,11 @@ function createPriorityInput(id, value, isSelected) {
 
     container.append(input, label);
     return container;
+}
+
+function setRadioButton(radioButtonId) {
+    const radioButton = document.querySelector(`#${radioButtonId}`);
+    radioButton.setAttribute('checked', '');
 }
 
 function createIcon(src, alt, height, width) {
@@ -119,6 +129,7 @@ export {
     createLabel,
     createInput,
     createTextArea,
-    createPriorityContainer,
-    createIcon, 
+    createFieldSet,
+    createIcon,
+    setRadioButton 
 }

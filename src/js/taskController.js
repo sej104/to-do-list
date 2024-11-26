@@ -9,11 +9,12 @@ const addTask = (projectIndex, title, description, dueDate, priority) => {
     );
 };
 
-const editTask = (projectIndex, taskIndex, title, description, priority) => {
+const editTask = (projectIndex, taskIndex, title, description, dueDate, priority) => {
     const task = projects[projectIndex].tasks[taskIndex];
 
     task.title = title;
     task.description = description;
+    task.dueDate = dueDate;
     task.priority = priority;
 };
 
@@ -47,12 +48,16 @@ const printTaskDetails = (projectIndex, taskIndex) => {
     console.log('');
 };
 
-const getTasks = (projectIndex) => {
+const getProjectTasks = (projectIndex) => {
     const project = projects[projectIndex];
 
     if (!project || !project.tasks.length) return;
 
     return project.tasks;
+}
+
+const getTask = (projectIndex, taskIndex) => {
+    return projects[projectIndex].tasks[taskIndex];
 }
 
 export { 
@@ -61,5 +66,6 @@ export {
     deleteTask, 
     printProjectTasks, 
     printTaskDetails, 
-    getTasks 
+    getProjectTasks,
+    getTask
 };

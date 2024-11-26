@@ -1,8 +1,7 @@
 import { getProjects, addProject, deleteProject } from './projectController.js';
-import { addTask, deleteTask } from './taskController.js';
-import { createDialog, createLabel, 
-    createInput, createPriorityContainer, 
-    createTextArea, createIcon } from './utility.js'
+import { addTask, editTask, deleteTask, getProjectTasks, getTask } from './taskController.js';
+import { createDialog, createLabel, createInput, createFieldSet, 
+    createTextArea, createIcon, setRadioButton } from './utility.js'
 
 function getActiveProject() {
     return document.querySelector('.active');
@@ -91,6 +90,7 @@ function loadTasks() {
             editButton.append(
                 createIcon('./images/edit.svg', 'Edit icon', 25, 23)
             );
+            editButton.addEventListener('click', clickHandlerEditTask);
             
             const viewButton = document.createElement('button');
             viewButton.setAttribute('type', 'button');
@@ -169,16 +169,74 @@ function loadAddTaskDialog() {
     const dueDateInput = createInput('date', 'due_date', 'due_date');
     dueDateContainer.append(dueDateLabel, dueDateInput);
 
-    const priorityContainer = createPriorityContainer();
+    const priorityContainer = createFieldSet();
 
     formInputs.append(titleContainer, descriptionContainer, 
         dueDateContainer, priorityContainer);
+
+    setRadioButton('low_priority');
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const activeProject = getActiveProject();
         addTask(
             activeProject.dataset.projectIndex,
+            e.target.title.value,
+            e.target.description.value,
+            e.target.due_date.value,
+            e.target.priority.value
+        );
+        dialog.remove();
+        loadTasks();
+    });
+}
+
+function loadEditTaskDialog(task) {
+    const dialog = createDialog('edit-task-dialog', 'Edit Task');
+    const formInputs = dialog.querySelector('.form-inputs');
+    const form = dialog.querySelector('form');
+
+    const titleContainer = document.createElement('p');
+    const titleLabel = createLabel('title', 'Title')
+    const titleInput = createInput('text', 'title', 'title', task.title);
+    titleInput.setAttribute('maxlength', '25');
+    titleContainer.append(titleLabel, titleInput);
+
+    const descriptionContainer = document.createElement('p');
+    const descriptionLabel = createLabel('description', 'Description');
+    const descriptionInput = createTextArea(task.description);
+    descriptionContainer.append(descriptionLabel, descriptionInput);
+
+    const dueDateContainer = document.createElement('p');
+    const dueDateLabel = createLabel('due_date', 'Due Date');
+    const dueDateInput = createInput('date', 'due_date', 
+        'due_date', task.dueDate);
+    dueDateContainer.append(dueDateLabel, dueDateInput);
+
+    const priorityContainer = createFieldSet();
+
+    formInputs.append(titleContainer, descriptionContainer, 
+        dueDateContainer, priorityContainer);
+
+    switch(task.priority) {
+        case 'low': 
+            setRadioButton('low_priority');
+            break;
+        case 'medium':                    
+            setRadioButton('medium_priority');
+            break;
+        case 'high':
+            setRadioButton('high_priority');
+            break;
+    }
+
+    form.addEventListener("submit", (e) => {
+        const projectIndex = getActiveProject().dataset.projectIndex;
+        const taskIndex = getProjectTasks(projectIndex).indexOf(task);
+        e.preventDefault();
+        editTask(
+            projectIndex,
+            taskIndex,
             e.target.title.value,
             e.target.description.value,
             e.target.due_date.value,
@@ -210,11 +268,24 @@ function clickHandlerDeleteProject(e) {
     loadProjects();
 }
 
+function clickHandlerEditTask(e) {
+    if (!e.target.matches('img')) return; 
+
+    const selectedTask = e.target.closest('.task');
+    const activeProject = getActiveProject();
+    
+    const task = getTask(activeProject.dataset.projectIndex, 
+        selectedTask.dataset.taskIndex);
+
+    loadEditTaskDialog(task);
+}
+
 function clickHandlerDeleteTask(e) {
     if (!e.target.matches('img')) return; 
 
     const selectedTask = e.target.closest('.task');
     const activeProject = getActiveProject();
+
     deleteTask(activeProject.dataset.projectIndex, 
         selectedTask.dataset.taskIndex);
 
