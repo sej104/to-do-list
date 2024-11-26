@@ -83,7 +83,7 @@ function loadTasks() {
             }
 
             const dueDate = document.createElement('p');
-            dueDate.textContent = task.dueDate;
+            dueDate.textContent = format(parseISO(task.dueDate), 'MM/dd/yyyy');
 
             const actionButtons = document.createElement('div');
             actionButtons.classList.add('action-btns');
