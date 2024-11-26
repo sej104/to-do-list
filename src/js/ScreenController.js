@@ -94,6 +94,7 @@ function loadTasks() {
             viewButton.append(
                 createIcon('./images/info.svg', 'Info icon', 25, 30)
             );
+            viewButton.addEventListener('click', clickHandlerViewTask);
             
             const deleteButton = document.createElement('button');
             deleteButton.setAttribute('type', 'button');
@@ -242,6 +243,56 @@ function loadEditTaskDialog(task) {
     });
 }
 
+function loadViewTaskDialog(task) {
+    const dialog = createDialog('view-task-dialog', 'Task Details');
+    const formInputs = dialog.querySelector('.form-inputs');
+    const formSubmit = dialog.querySelector('.form-submit');
+
+    const titleContainer = document.createElement('p');
+    const titleLabel = createLabel('title', 'Title')
+    const titleInput = createInput('text', 'title', 'title', task.title);
+    titleInput.setAttribute('disabled', '');
+    titleInput.setAttribute('maxlength', '25');
+    titleContainer.append(titleLabel, titleInput);
+
+    const descriptionContainer = document.createElement('p');
+    const descriptionLabel = createLabel('description', 'Description');
+    const descriptionInput = createTextArea('description', task.description);
+    descriptionInput.setAttribute('disabled', '');
+    descriptionContainer.append(descriptionLabel, descriptionInput);
+
+    const dueDateContainer = document.createElement('p');
+    const dueDateLabel = createLabel('due_date', 'Due Date');
+    const dueDateInput = createInput('date', 'due_date', 
+        'due_date', task.dueDate);
+    dueDateInput.setAttribute('disabled', '');
+    dueDateContainer.append(dueDateLabel, dueDateInput);
+
+    const priorityContainer = createPriorityContainer();
+
+    const radioButtons = priorityContainer.querySelectorAll('input');
+    radioButtons.forEach(radioButton => {
+        radioButton.setAttribute('disabled', '');
+    });
+
+    formInputs.append(titleContainer, descriptionContainer, 
+        dueDateContainer, priorityContainer);
+
+    switch(task.priority) {
+        case 'low': 
+            setRadioButton('low_priority');
+            break;
+        case 'medium':                    
+            setRadioButton('medium_priority');
+            break;
+        case 'high':
+            setRadioButton('high_priority');
+            break;
+    }
+
+    formSubmit.remove();
+}
+
 function clickHandlerSelectProject(e) {
     const selectedProject = e.target.closest('.project');
     if (!selectedProject) return;
@@ -274,6 +325,18 @@ function clickHandlerEditTask(e) {
 
     loadEditTaskDialog(task);
 }
+
+function clickHandlerViewTask(e) {
+    if (!e.target.matches('img')) return; 
+
+    const selectedTask = e.target.closest('.task');
+    const activeProject = getActiveProject();
+    
+    const task = getTask(activeProject.dataset.projectIndex, 
+        selectedTask.dataset.taskIndex);
+
+    loadViewTaskDialog(task);
+} 
 
 function clickHandlerDeleteTask(e) {
     if (!e.target.matches('img')) return; 
