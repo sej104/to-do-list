@@ -134,6 +134,7 @@ function createTaskDialogInputs() {
     const dueDateContainer = document.createElement('p');
     const dueDateLabel = createLabel('due_date', 'Due Date');
     const dueDateInput = createInput('date', 'due_date', 'due_date');
+    dueDateInput.setAttribute('min', `${format(new Date(), 'yyyy-MM-dd')}`);
     dueDateContainer.append(dueDateLabel, dueDateInput);
 
     const priorityContainer = createPriorityContainer();
