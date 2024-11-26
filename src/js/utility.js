@@ -61,12 +61,11 @@ function createInput(type, id, name, value) {
     return input;
 }
 
-function createTextArea(identifier, value) {
+function createTextArea(identifier) {
     const textArea = document.createElement('textarea');
     textArea.id = identifier;
     textArea.setAttribute('name', identifier);
     textArea.setAttribute('rows', '2');
-    if (value) textArea.textContent = value;
     textArea.setAttribute('required', '');
     return textArea;
 }
@@ -117,12 +116,58 @@ function createIcon(src, alt, height, width) {
     return icon;
 }
 
+function createTaskDialogInputs() {
+    const titleContainer = document.createElement('p');
+    const titleLabel = createLabel('title', 'Title')
+    const titleInput = createInput('text', 'title', 'title');
+    titleInput.setAttribute('maxlength', '25');
+    titleContainer.append(titleLabel, titleInput);
+
+    const descriptionContainer = document.createElement('p');
+    const descriptionLabel = createLabel('description', 'Description');
+    const descriptionInput = createTextArea('description');
+    descriptionContainer.append(descriptionLabel, descriptionInput);
+
+    const dueDateContainer = document.createElement('p');
+    const dueDateLabel = createLabel('due_date', 'Due Date');
+    const dueDateInput = createInput('date', 'due_date', 'due_date');
+    dueDateContainer.append(dueDateLabel, dueDateInput);
+
+    const priorityContainer = createPriorityContainer();
+
+    return [titleContainer, descriptionContainer, 
+        dueDateContainer, priorityContainer];
+}
+
+function setTaskInputValues(task) {
+    const titleInput = document.querySelector('#title');
+    titleInput.setAttribute('value', task.title);
+
+    const descriptionInput = document.querySelector('#description');
+    descriptionInput.textContent = task.description;
+
+    const dueDateInput = document.querySelector('#due_date');
+    dueDateInput.setAttribute('value', task.dueDate);
+
+    switch(task.priority) {
+        case 'low': 
+            setRadioButton('low_priority');
+            break;
+        case 'medium':                    
+            setRadioButton('medium_priority');
+            break;
+        case 'high':
+            setRadioButton('high_priority');
+            break;
+    }
+}
+
 export { 
     createDialog,
     createLabel,
     createInput,
-    createTextArea,
-    createPriorityContainer,
     createIcon,
-    setRadioButton 
+    setRadioButton,
+    createTaskDialogInputs,
+    setTaskInputValues
 }

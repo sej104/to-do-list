@@ -1,7 +1,9 @@
-import { getProjects, addProject, deleteProject } from './projectController.js';
-import { addTask, editTask, deleteTask, getProjectTasks, getTask } from './taskController.js';
-import { createDialog, createLabel, createInput, createPriorityContainer, 
-    createTextArea, createIcon, setRadioButton } from './utility.js'
+import { getProjects, addProject, 
+    deleteProject } from './projectController.js';
+import { addTask, editTask, deleteTask, 
+    getProjectTasks, getTask } from './taskController.js';
+import { createDialog, createLabel, createInput, setTaskInputValues,
+    createIcon, setRadioButton, createTaskDialogInputs} from './utility.js';
 
 function getActiveProject() {
     return document.querySelector('.active');
@@ -149,23 +151,8 @@ function loadAddTaskDialog() {
     const formInputs = dialog.querySelector('.form-inputs');
     const form = dialog.querySelector('form');
 
-    const titleContainer = document.createElement('p');
-    const titleLabel = createLabel('title', 'Title')
-    const titleInput = createInput('text', 'title', 'title');
-    titleInput.setAttribute('maxlength', '25');
-    titleContainer.append(titleLabel, titleInput);
-
-    const descriptionContainer = document.createElement('p');
-    const descriptionLabel = createLabel('description', 'Description');
-    const descriptionInput = createTextArea('description');
-    descriptionContainer.append(descriptionLabel, descriptionInput);
-
-    const dueDateContainer = document.createElement('p');
-    const dueDateLabel = createLabel('due_date', 'Due Date');
-    const dueDateInput = createInput('date', 'due_date', 'due_date');
-    dueDateContainer.append(dueDateLabel, dueDateInput);
-
-    const priorityContainer = createPriorityContainer();
+    const [titleContainer, descriptionContainer, 
+        dueDateContainer, priorityContainer] = createTaskDialogInputs();
 
     formInputs.append(titleContainer, descriptionContainer, 
         dueDateContainer, priorityContainer);
@@ -192,39 +179,13 @@ function loadEditTaskDialog(task) {
     const formInputs = dialog.querySelector('.form-inputs');
     const form = dialog.querySelector('form');
 
-    const titleContainer = document.createElement('p');
-    const titleLabel = createLabel('title', 'Title')
-    const titleInput = createInput('text', 'title', 'title', task.title);
-    titleInput.setAttribute('maxlength', '25');
-    titleContainer.append(titleLabel, titleInput);
-
-    const descriptionContainer = document.createElement('p');
-    const descriptionLabel = createLabel('description', 'Description');
-    const descriptionInput = createTextArea('description', task.description);
-    descriptionContainer.append(descriptionLabel, descriptionInput);
-
-    const dueDateContainer = document.createElement('p');
-    const dueDateLabel = createLabel('due_date', 'Due Date');
-    const dueDateInput = createInput('date', 'due_date', 
-        'due_date', task.dueDate);
-    dueDateContainer.append(dueDateLabel, dueDateInput);
-
-    const priorityContainer = createPriorityContainer();
+    const [titleContainer, descriptionContainer, 
+        dueDateContainer, priorityContainer] = createTaskDialogInputs();
 
     formInputs.append(titleContainer, descriptionContainer, 
         dueDateContainer, priorityContainer);
 
-    switch(task.priority) {
-        case 'low': 
-            setRadioButton('low_priority');
-            break;
-        case 'medium':                    
-            setRadioButton('medium_priority');
-            break;
-        case 'high':
-            setRadioButton('high_priority');
-            break;
-    }
+    setTaskInputValues(task);
 
     form.addEventListener("submit", (e) => {
         const projectIndex = getActiveProject().dataset.projectIndex;
@@ -248,47 +209,18 @@ function loadViewTaskDialog(task) {
     const formInputs = dialog.querySelector('.form-inputs');
     const formSubmit = dialog.querySelector('.form-submit');
 
-    const titleContainer = document.createElement('p');
-    const titleLabel = createLabel('title', 'Title')
-    const titleInput = createInput('text', 'title', 'title', task.title);
-    titleInput.setAttribute('disabled', '');
-    titleInput.setAttribute('maxlength', '25');
-    titleContainer.append(titleLabel, titleInput);
-
-    const descriptionContainer = document.createElement('p');
-    const descriptionLabel = createLabel('description', 'Description');
-    const descriptionInput = createTextArea('description', task.description);
-    descriptionInput.setAttribute('disabled', '');
-    descriptionContainer.append(descriptionLabel, descriptionInput);
-
-    const dueDateContainer = document.createElement('p');
-    const dueDateLabel = createLabel('due_date', 'Due Date');
-    const dueDateInput = createInput('date', 'due_date', 
-        'due_date', task.dueDate);
-    dueDateInput.setAttribute('disabled', '');
-    dueDateContainer.append(dueDateLabel, dueDateInput);
-
-    const priorityContainer = createPriorityContainer();
-
-    const radioButtons = priorityContainer.querySelectorAll('input');
-    radioButtons.forEach(radioButton => {
-        radioButton.setAttribute('disabled', '');
-    });
+    const [titleContainer, descriptionContainer, 
+        dueDateContainer, priorityContainer] = createTaskDialogInputs();
 
     formInputs.append(titleContainer, descriptionContainer, 
         dueDateContainer, priorityContainer);
 
-    switch(task.priority) {
-        case 'low': 
-            setRadioButton('low_priority');
-            break;
-        case 'medium':                    
-            setRadioButton('medium_priority');
-            break;
-        case 'high':
-            setRadioButton('high_priority');
-            break;
-    }
+    setTaskInputValues(task);
+
+    const inputs = dialog.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.setAttribute('disabled', '');
+    });
 
     formSubmit.remove();
 }
