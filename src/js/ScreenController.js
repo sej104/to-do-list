@@ -133,8 +133,13 @@ function loadAddProjectDialog() {
     const formInputs = dialog.querySelector('.form-inputs');
     const form = dialog.querySelector('form');
 
+    const asterisk = document.createElement('span');
+    asterisk.setAttribute('aria-label', 'required');
+    asterisk.textContent = '*';
+
     const titleContainer = document.createElement('p');
-    const titleLabel = createLabel('title', 'Title');
+    const titleLabel = createLabel('title', 'Title ');
+    titleLabel.append(asterisk);
     const titleInput = createInput('text', 'title', 'title');
     titleInput.setAttribute('maxlength', '20');
     titleContainer.append(titleLabel, titleInput);
@@ -225,6 +230,7 @@ function loadViewTaskDialog(task) {
     inputs.forEach(input => {
         input.setAttribute('disabled', '');
     });
+
 
     formSubmit.remove();
 }

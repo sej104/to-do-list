@@ -28,10 +28,12 @@ function createDialog(id, heading) {
 
     const formSubmit = document.createElement('div');
     formSubmit.classList.add('form-submit');
+
     const submitButton = document.createElement('button');
     submitButton.setAttribute('type', 'submit');
     submitButton.id = 'submit-btn';
     submitButton.textContent = 'Submit';
+    
     formSubmit.append(submitButton);
 
     form.append(formHeader, formInputs, formSubmit);
@@ -69,7 +71,6 @@ function createTextArea(identifier) {
     textArea.id = identifier;
     textArea.setAttribute('name', identifier);
     textArea.setAttribute('rows', '2');
-    textArea.setAttribute('required', '');
     return textArea;
 }
 
@@ -120,8 +121,13 @@ function createIcon(src, alt, height, width) {
 }
 
 function createTaskDialogInputs() {
+    const asterisk = document.createElement('span');
+    asterisk.setAttribute('aria-label', 'required');
+    asterisk.textContent = '*';
+
     const titleContainer = document.createElement('p');
-    const titleLabel = createLabel('title', 'Title')
+    const titleLabel = createLabel('title', 'Title ');
+    titleLabel.append(asterisk);
     const titleInput = createInput('text', 'title', 'title');
     titleInput.setAttribute('maxlength', '25');
     titleContainer.append(titleLabel, titleInput);
@@ -132,7 +138,8 @@ function createTaskDialogInputs() {
     descriptionContainer.append(descriptionLabel, descriptionInput);
 
     const dueDateContainer = document.createElement('p');
-    const dueDateLabel = createLabel('due_date', 'Due Date');
+    const dueDateLabel = createLabel('due_date', 'Due Date ');
+    dueDateLabel.append(asterisk.cloneNode(true));
     const dueDateInput = createInput('date', 'due_date', 'due_date');
     dueDateInput.setAttribute('min', `${format(new Date(), 'yyyy-MM-dd')}`);
     dueDateContainer.append(dueDateLabel, dueDateInput);
