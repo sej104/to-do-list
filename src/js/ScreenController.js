@@ -231,6 +231,8 @@ function loadViewTaskDialog(task) {
         input.setAttribute('disabled', '');
     });
 
+    const textArea = dialog.querySelector('textarea');
+    textArea.setAttribute('disabled', '');
 
     formSubmit.remove();
 }
