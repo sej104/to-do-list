@@ -21,6 +21,7 @@ const addProject = (name) => {
 const deleteProject = (index) => {
     projects.splice(index, 1);
     updateLocalStorage();
+    if (!projects.length) addProject('Default');
 }
 
 export {
