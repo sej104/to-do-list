@@ -1,16 +1,18 @@
 import Project from "./Project.js";
 
 if (!localStorage.length) {
-    const arr = [new Project('Default')];
-    localStorage.setItem("projects", JSON.stringify(arr));
+    const project = new Project('Default');
+    localStorage.setItem("projects", JSON.stringify([project]));
 }
 
 const projects = JSON.parse(localStorage.getItem("projects"));
 
-const getProjects = () => projects;
+const getProjects = () => {
+    return projects;
+}
 
 const updateLocalStorage = () => {
-    localStorage.setItem('projects', JSON.stringify(projects));
+    localStorage.setItem("projects", JSON.stringify(projects));
 }
 
 const addProject = (name) => {

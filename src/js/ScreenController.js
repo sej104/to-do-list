@@ -3,7 +3,7 @@ import { getProjects, addProject,
 import { addTask, editTask, deleteTask, 
     getProjectTasks, getTask } from './taskController.js';
 import { createDialog, createLabel, createInput, setTaskInputValues,
-    createIcon, setRadioButton, createTaskDialogInputs} from './utility.js';
+    createIcon, setRadioButton, createTaskDialogInputs } from './utility.js';
 import editImage from '../images/edit.svg';
 import infoImage from '../images/info.svg';
 import trashImage from '../images/trash.svg';
@@ -11,6 +11,17 @@ import { format, parseISO } from 'date-fns';
 
 function getActiveProject() {
     return document.querySelector('.active');
+}
+
+function removeTasks() {
+    const projectTitle = document.querySelector('#project-title');
+    projectTitle.textContent = 'Select a Project...';
+
+    const addTaskButton = document.querySelector('#add-task-btn');
+    if (addTaskButton) addTaskButton.remove();
+
+    const taskContainer = document.querySelector('#task-container');
+    taskContainer.textContent = '';
 }
 
 function loadProjects() {
@@ -22,6 +33,7 @@ function loadProjects() {
     projectContainer.append(heading);
 
     const projects = getProjects();
+
     projects.forEach(project => {
         const button = document.createElement('button');
         button.setAttribute('type', 'button');
@@ -31,8 +43,7 @@ function loadProjects() {
         const projectTitle = document.createElement('span');
         projectTitle.textContent = project.title;
         
-        const trashIcon = createIcon(trashImage, 
-            'Trash icon', 25, 25);
+        const trashIcon = createIcon(trashImage, 'Trash icon', 25, 25);
 
         button.append(projectTitle, trashIcon);
         projectContainer.append(button);
@@ -58,14 +69,15 @@ function loadTasks() {
         projectHeader.append(addTaskButton);
 
         const tasks = getProjectTasks(activeProject.dataset.projectIndex);
+
         tasks.forEach(task => {
-            const container = document.createElement('div');
-            container.classList.add('task');
-            container.dataset.taskIndex = tasks.indexOf(task);
+            const div = document.createElement('div');
+            div.classList.add('task');
+            div.dataset.taskIndex = tasks.indexOf(task);
 
             const title = document.createElement('p');
-            title.textContent = task.title;
             title.classList.add('task-title');
+            title.textContent = task.title;
 
             const priority = document.createElement('p');
             priority.textContent = task.priority;
@@ -93,39 +105,28 @@ function loadTasks() {
             editButton.append(
                 createIcon(editImage, 'Edit icon', 25, 23)
             );
-            editButton.addEventListener('click', clickHandlerEditTask);
+            editButton.addEventListener('click', editTaskDOM);
             
             const viewButton = document.createElement('button');
             viewButton.setAttribute('type', 'button');
             viewButton.append(
                 createIcon(infoImage, 'Info icon', 25, 30)
             );
-            viewButton.addEventListener('click', clickHandlerViewTask);
+            viewButton.addEventListener('click', viewTaskDOM);
             
             const deleteButton = document.createElement('button');
             deleteButton.setAttribute('type', 'button');
             deleteButton.append(
                 createIcon(trashImage, 'Trash icon', 25, 25)
             );
-            deleteButton.addEventListener('click', clickHandlerDeleteTask);
+            deleteButton.addEventListener('click', deleteTaskDOM);
             
             actionButtons.append(editButton, viewButton, deleteButton);
 
-            container.append(title, priority, dueDate, actionButtons);
-            document.querySelector('#task-container').append(container);
+            div.append(title, priority, dueDate, actionButtons);
+            document.querySelector('#task-container').append(div);
         });
     }
-}
-
-function removeTasks() {
-    const projectTitle = document.querySelector('#project-title');
-    projectTitle.textContent = 'Select a Project...';
-
-    const addTaskButton = document.querySelector('#add-task-btn');
-    if (addTaskButton) addTaskButton.remove();
-
-    const taskContainer = document.querySelector('#task-container');
-    taskContainer.textContent = '';
 }
 
 function loadAddProjectDialog() {
@@ -135,18 +136,20 @@ function loadAddProjectDialog() {
 
     const asterisk = document.createElement('span');
     asterisk.setAttribute('aria-label', 'required');
-    asterisk.textContent = '*';
+    asterisk.textContent = ' *';
 
-    const titleContainer = document.createElement('p');
-    const titleLabel = createLabel('title', 'Title ');
-    titleLabel.append(asterisk);
-    const titleInput = createInput('text', 'title', 'title');
-    titleInput.setAttribute('maxlength', '20');
-    titleContainer.append(titleLabel, titleInput);
+    const container = document.createElement('p');
 
-    formInputs.append(titleContainer);
+    const label = createLabel('title', 'Title');
+    label.append(asterisk);
 
-    form.addEventListener("submit", (e) => {
+    const input = createInput('text', 'title', 'title');
+    input.setAttribute('maxlength', '20');
+
+    container.append(label, input);
+    formInputs.append(container);
+
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
         addProject(e.target.title.value);
         dialog.remove();
@@ -168,7 +171,7 @@ function loadAddTaskDialog() {
 
     setRadioButton('low_priority');
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
         const projectIndex = getActiveProject().dataset.projectIndex;
         addTask(
@@ -196,7 +199,7 @@ function loadEditTaskDialog(task) {
 
     setTaskInputValues(task);
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener('submit', (e) => {
         const projectIndex = getActiveProject().dataset.projectIndex;
         const taskIndex = getProjectTasks(projectIndex).indexOf(task);
         e.preventDefault();
@@ -213,8 +216,8 @@ function loadEditTaskDialog(task) {
     });
 }
 
-function loadViewTaskDialog(task) {
-    const dialog = createDialog('view-task-dialog', 'Task Details');
+function loadTaskDetailsDialog(task) {
+    const dialog = createDialog('task-details-dialog', 'Task Details');
     const formInputs = dialog.querySelector('.form-inputs');
     const formSubmit = dialog.querySelector('.form-submit');
 
@@ -237,7 +240,7 @@ function loadViewTaskDialog(task) {
     formSubmit.remove();
 }
 
-function clickHandlerSelectProject(e) {
+function selectProjectDOM(e) {
     const selectedProject = e.target.closest('.project');
     if (!selectedProject) return;
 
@@ -245,11 +248,10 @@ function clickHandlerSelectProject(e) {
     if (activeProject) activeProject.classList.remove('active');
     
     selectedProject.classList.add('active');
-    
     loadTasks();
 }
 
-function clickHandlerDeleteProject(e) {
+function deleteProjectDOM(e) {
     if (!e.target.matches('img')) return; 
 
     const selectedProject = e.target.closest('.project');
@@ -258,7 +260,7 @@ function clickHandlerDeleteProject(e) {
     loadProjects();
 }
 
-function clickHandlerEditTask(e) {
+function editTaskDOM(e) {
     if (!e.target.matches('img')) return; 
 
     const selectedTask = e.target.closest('.task');
@@ -270,7 +272,7 @@ function clickHandlerEditTask(e) {
     loadEditTaskDialog(task);
 }
 
-function clickHandlerViewTask(e) {
+function viewTaskDOM(e) {
     if (!e.target.matches('img')) return; 
 
     const selectedTask = e.target.closest('.task');
@@ -279,10 +281,10 @@ function clickHandlerViewTask(e) {
     const task = getTask(activeProject.dataset.projectIndex, 
         selectedTask.dataset.taskIndex);
 
-    loadViewTaskDialog(task);
+    loadTaskDetailsDialog(task);
 } 
 
-function clickHandlerDeleteTask(e) {
+function deleteTaskDOM(e) {
     if (!e.target.matches('img')) return; 
 
     const selectedTask = e.target.closest('.task');
@@ -297,6 +299,6 @@ function clickHandlerDeleteTask(e) {
 export { 
     loadProjects, 
     loadAddProjectDialog, 
-    clickHandlerSelectProject, 
-    clickHandlerDeleteProject 
+    selectProjectDOM, 
+    deleteProjectDOM 
 };

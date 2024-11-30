@@ -1,7 +1,18 @@
 import closeImage from '../images/close.svg';
 import { format } from 'date-fns';
 
-function createDialog(id, heading) {
+function createIcon(src, alt, height, width) {
+    const icon = document.createElement('img');
+    icon.src = src;
+    icon.alt = alt;
+    if (height && width) {
+        icon.height = height;
+        icon.width = width;
+    }
+    return icon;
+}
+
+function createDialog(id, title) {
     const dialog = document.createElement('dialog');
     dialog.id = id;
 
@@ -10,18 +21,19 @@ function createDialog(id, heading) {
     const formHeader = document.createElement('div');
     formHeader.classList.add('form-header');
 
-    const dialogHeading = document.createElement('h2');
-    dialogHeading.textContent = heading;
+    const dialogTitle = document.createElement('h2');
+    dialogTitle.textContent = title;
 
     const closeDialogButton = document.createElement('button');
     closeDialogButton.setAttribute('type', 'button');
     closeDialogButton.id = 'close-dialog';
     closeDialogButton.setAttribute('autofocus', '');
+    closeDialogButton.addEventListener('click', () => dialog.remove());
 
     const icon = createIcon(closeImage);
     closeDialogButton.append(icon);
 
-    formHeader.append(dialogHeading, closeDialogButton);
+    formHeader.append(dialogTitle, closeDialogButton);
 
     const formInputs = document.createElement('div');
     formInputs.classList.add('form-inputs');
@@ -41,11 +53,6 @@ function createDialog(id, heading) {
     document.querySelector('body').append(dialog);
 
     dialog.showModal();
-    
-    closeDialogButton.addEventListener('click', () => {
-        dialog.remove();
-    });
-    
     return dialog;
 }
 
@@ -74,6 +81,19 @@ function createTextArea(identifier) {
     return textArea;
 }
 
+function createRadioButton(id, name, value) {
+    const container = document.createElement('li');
+    const input = createInput('radio', id, name, value);
+    //Capitalize first letter in label
+    const label = createLabel(id, 
+        `${value.charAt(0).toUpperCase()}${value.slice(1)}`
+    );
+    label.classList.add('radio-label');
+
+    container.append(input, label);
+    return container;
+}
+
 function createPriorityContainer() {
     const fieldSet = document.createElement('fieldset');
     const legend = document.createElement('legend');
@@ -90,43 +110,13 @@ function createPriorityContainer() {
     return fieldSet;
 }
 
-function createRadioButton(id, name, value) {
-    const container = document.createElement('li');
-
-    const input = createInput('radio', id, name, value);
-    
-    const label = createLabel(id, 
-        `${value.charAt(0).toUpperCase()}${value.slice(1)}`
-    );
-    label.classList.add('radio-label');
-
-    container.append(input, label);
-    return container;
-}
-
-function setRadioButton(radioButtonId) {
-    const radioButton = document.querySelector(`#${radioButtonId}`);
-    radioButton.setAttribute('checked', '');
-}
-
-function createIcon(src, alt, height, width) {
-    const icon = document.createElement('img');
-    icon.src = src;
-    icon.alt = alt;
-    if (height && width) {
-        icon.height = height;
-        icon.width = width;
-    }
-    return icon;
-}
-
 function createTaskDialogInputs() {
     const asterisk = document.createElement('span');
     asterisk.setAttribute('aria-label', 'required');
-    asterisk.textContent = '*';
+    asterisk.textContent = ' *';
 
     const titleContainer = document.createElement('p');
-    const titleLabel = createLabel('title', 'Title ');
+    const titleLabel = createLabel('title', 'Title');
     titleLabel.append(asterisk);
     const titleInput = createInput('text', 'title', 'title');
     titleInput.setAttribute('maxlength', '25');
@@ -148,6 +138,11 @@ function createTaskDialogInputs() {
 
     return [titleContainer, descriptionContainer, 
         dueDateContainer, priorityContainer];
+}
+
+function setRadioButton(radioButtonId) {
+    const radioButton = document.querySelector(`#${radioButtonId}`);
+    radioButton.setAttribute('checked', '');
 }
 
 function setTaskInputValues(task) {
@@ -174,11 +169,11 @@ function setTaskInputValues(task) {
 }
 
 export { 
+    createIcon,
     createDialog,
     createLabel,
     createInput,
-    createIcon,
-    setRadioButton,
     createTaskDialogInputs,
+    setRadioButton,
     setTaskInputValues
 }

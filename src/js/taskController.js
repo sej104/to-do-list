@@ -26,8 +26,7 @@ const deleteTask = (projectIndex, taskIndex) => {
 };
 
 const getProjectTasks = (projectIndex) => {
-    const project = projects[projectIndex];
-    return project.tasks;
+    return projects[projectIndex].tasks;
 }
 
 const getTask = (projectIndex, taskIndex) => {
